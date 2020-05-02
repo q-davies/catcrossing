@@ -129,9 +129,9 @@ class Application(tk.Frame):
             ygNoiseStart = ygNoise.get()
             y = 0
             while y <= height + gridSize.get(): 
-                red = 120
-                blue = 32
-                green = 65
+                red = int(255 * random())
+                blue = int(255 * random())
+                green = int(255 * random())
                 
                 if(random() > 0.5):
                     canvas.create_line(x,y,x+gridSize.get(),y+gridSize.get(), fill=self.hexColor((red,blue,green)), width = gridSize.get()/strokeDiv.get(),smooth=True)
