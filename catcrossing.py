@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import *
 from random import seed
 from random import random
+from PIL import ImageGrab
 class Application(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
@@ -47,45 +48,35 @@ class Application(tk.Frame):
         self.slider_panel.add(self.update_button)
         
         #xrSlide
-        self.xrSlide = Scale(self.slider_label, from_=1,to=10,orient=HORIZONTAL)
+        self.xrSlide = Scale(self.slider_label, from_=1,to=15,orient=HORIZONTAL)
         self.xrSlide.pack()
         self.xrLabel = Label(self.slider_label, text="xrNoise")
         self.xrLabel.pack()
         #yrSlide
-        self.yrSlide = Scale(self.slider_label, from_=1,to=10,orient=HORIZONTAL)
+        self.yrSlide = Scale(self.slider_label, from_=1,to=15,orient=HORIZONTAL)
         self.yrSlide.pack()
         self.yrLabel = Label(self.slider_label, text="yrNoise")
         self.yrLabel.pack()
         #xbSlide
-        self.xbSlide = Scale(self.slider_label, from_=1,to=10,orient=HORIZONTAL)
+        self.xbSlide = Scale(self.slider_label, from_=1,to=15,orient=HORIZONTAL)
         self.xbSlide.pack()
         self.xbLabel = Label(self.slider_label, text="xbNoise")
         self.xbLabel.pack()
         #ybSlide
-        self.ybSlide = Scale(self.slider_label, from_=1,to=10,orient=HORIZONTAL)
+        self.ybSlide = Scale(self.slider_label, from_=1,to=15,orient=HORIZONTAL)
         self.ybSlide.pack()
         self.ybLabel = Label(self.slider_label, text="ybNoise")
         self.ybLabel.pack()
         #xgSlide
-        self.xgSlide = Scale(self.slider_label, from_=1,to=10,orient=HORIZONTAL)
+        self.xgSlide = Scale(self.slider_label, from_=1,to=15,orient=HORIZONTAL)
         self.xgSlide.pack()
         self.xgLabel = Label(self.slider_label, text="xgNoise")
         self.xgLabel.pack()
         #ygSlide
-        self.ygSlide = Scale(self.slider_label, from_=1,to=10,orient=HORIZONTAL)
+        self.ygSlide = Scale(self.slider_label, from_=1,to=15,orient=HORIZONTAL)
         self.ygSlide.pack()
         self.ygLabel = Label(self.slider_label, text="ygNoise")
         self.ygLabel.pack()
-        #xaSlide
-        self.xaSlide = Scale(self.slider_label, from_=1,to=10,orient=HORIZONTAL)
-        self.xaSlide.pack()
-        self.xaLabel = Label(self.slider_label, text="xaNoise")
-        self.xaLabel.pack()
-        #yaSlide
-        self.yaSlide = Scale(self.slider_label, from_=1,to=10,orient=HORIZONTAL)
-        self.yaSlide.pack()
-        self.yaLabel = Label(self.slider_label, text="yaNoise")
-        self.yaLabel.pack()
         #gridSlide
         self.gridSlide = Scale(self.slider_label, from_=5,to=30,orient=HORIZONTAL)
         self.gridSlide.pack()
@@ -109,17 +100,29 @@ class Application(tk.Frame):
         return "#%02x%02x%02x" % rgb
     
     def save(self):
-        print("Saved (not really)")
+        #print("Saved (not really)")
         #self.color = 'green'
         #self.draw(self.canvas,self.rSlide,self.gSlide,self.bSlide)
+        x=root.winfo_rootx()+self.canvas.winfo_x()
+        y=root.winfo_rooty()+self.canvas.winfo_y()
+        x1 = x+self.canvas.winfo_width()
+        y1=y+self.canvas.winfo_height()
+        ImageGrab.grab().crop((x,y,x1,y1)).save("catcrossing.png")
 
     def update(self):
-        self.draw(self.canvas,self.xrSlide,self.yrSlide,self.xbSlide,self.ybSlide,self.xgSlide,self.ygSlide,self.xaSlide,self.yaSlide,self.gridSlide,self.strokeSlide)
+        self.draw(self.canvas,self.xrSlide,self.yrSlide,self.xbSlide,self.ybSlide,self.xgSlide,self.ygSlide,self.gridSlide,self.strokeSlide)
         
     def noise(self, y, x):
-        return y * x / 100.0
+        n = y * x / 100.0
+        
+        n = n - int(n)
+        
+        if n > 1:
+            print(str(y) + " " + str(x))
+            
+        return n 
     
-    def draw(self, canvas, xrNoise, yrNoise, xbNoise, ybNoise, xgNoise, ygNoise, xaNoise, yaNoise, gridSize, strokeDiv):
+    def draw(self, canvas, xrNoise, yrNoise, xbNoise, ybNoise, xgNoise, ygNoise, gridSize, strokeDiv):
         canvas.delete("all")
         noiseScale = 0.1
         width = 1500
@@ -142,6 +145,7 @@ class Application(tk.Frame):
                 red = int(255 * self.noise(yrNoiseSet, xrNoiseSet))
                 blue = int(255 * self.noise(ybNoiseSet, xbNoiseSet))
                 green = int(255 * self.noise(ygNoiseSet, xgNoiseSet))
+                
                 
                 if(random() > 0.5):
                     canvas.create_line(x,y,x+gridSize.get(),y+gridSize.get(), fill=self.hexColor((red,blue,green)), width = gridSize.get()/strokeDiv.get(),smooth=True)
