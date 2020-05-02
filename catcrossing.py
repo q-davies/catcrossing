@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import *
+from random import seed
+from random import random
 class Application(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
@@ -13,9 +15,9 @@ class Application(tk.Frame):
     def create_widgets(self):
         self.canvas_panel = tk.PanedWindow(self)
 
-        self.canvas_label = tk.LabelFrame(self.canvas_panel, text='Canvas', width=1000, height=100)
+        self.canvas_label = tk.LabelFrame(self.canvas_panel, text='Canvas', width=1500, height=1000)
 
-        self.canvas = tk.Canvas(self.canvas_label, bg="white")
+        self.canvas = tk.Canvas(self.canvas_label, bg="white", width=3000, height=1000)
 
         #self.draw(self.canvas,self.rSlide,self.gSlide,self.bSlide)
 
@@ -115,13 +117,29 @@ class Application(tk.Frame):
         self.draw(self.canvas,self.xrSlide,self.yrSlide,self.xbSlide,self.ybSlide,self.xgSlide,self.ygSlide,self.xaSlide,self.yaSlide,self.gridSlide,self.strokeSlide)
         
     def draw(self, canvas, xrNoise, yrNoise, xbNoise, ybNoise, xgNoise, ygNoise, xaNoise, yaNoise, gridSize, strokeDiv):
+        canvas.delete("all")
         noiseScale = 0.1
-        #for
+        width = 1500
+        height = 1000
+        x = 0
+        seed(1)
+        while x <= width + gridSize.get():
             yrNoiseStart = yrNoise.get()
             ybNoiseStart = ybNoise.get()
             ygNoiseStart = ygNoise.get()
-            #for
-                red =
+            y = 0
+            while y <= height + gridSize.get(): 
+                red = 120
+                blue = 32
+                green = 65
+                
+                if(random() > 0.5):
+                    canvas.create_line(x,y,x+gridSize.get(),y+gridSize.get(), fill=self.hexColor((red,blue,green)), width = gridSize.get()/strokeDiv.get(),smooth=True)
+                else:
+                    canvas.create_line(x,y+gridSize.get(),x+gridSize.get(),y, fill=self.hexColor((red,blue,green)), width = gridSize.get()/strokeDiv.get(),smooth=True)
+                y += gridSize.get()
+            x += gridSize.get()
+                    
         
         canvas.pack()
     
