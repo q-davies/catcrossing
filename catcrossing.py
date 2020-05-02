@@ -116,6 +116,9 @@ class Application(tk.Frame):
     def update(self):
         self.draw(self.canvas,self.xrSlide,self.yrSlide,self.xbSlide,self.ybSlide,self.xgSlide,self.ygSlide,self.xaSlide,self.yaSlide,self.gridSlide,self.strokeSlide)
         
+    def noise(self, y, x):
+        return y * x / 100.0
+    
     def draw(self, canvas, xrNoise, yrNoise, xbNoise, ybNoise, xgNoise, ygNoise, xaNoise, yaNoise, gridSize, strokeDiv):
         canvas.delete("all")
         noiseScale = 0.1
@@ -123,22 +126,38 @@ class Application(tk.Frame):
         height = 1000
         x = 0
         seed(1)
+        xrNoiseSet = xrNoise.get()
+        xbNoiseSet = xbNoise.get()
+        xgNoiseSet = xgNoise.get()
+        
         while x <= width + gridSize.get():
             yrNoiseStart = yrNoise.get()
             ybNoiseStart = ybNoise.get()
             ygNoiseStart = ygNoise.get()
+            yrNoiseSet = yrNoiseStart
+            ybNoiseSet = ybNoiseStart
+            ygNoiseSet = ygNoiseStart
             y = 0
             while y <= height + gridSize.get(): 
-                red = int(255 * random())
-                blue = int(255 * random())
-                green = int(255 * random())
+                red = int(255 * self.noise(yrNoiseSet, xrNoiseSet))
+                blue = int(255 * self.noise(ybNoiseSet, xbNoiseSet))
+                green = int(255 * self.noise(ygNoiseSet, xgNoiseSet))
                 
                 if(random() > 0.5):
                     canvas.create_line(x,y,x+gridSize.get(),y+gridSize.get(), fill=self.hexColor((red,blue,green)), width = gridSize.get()/strokeDiv.get(),smooth=True)
                 else:
                     canvas.create_line(x,y+gridSize.get(),x+gridSize.get(),y, fill=self.hexColor((red,blue,green)), width = gridSize.get()/strokeDiv.get(),smooth=True)
                 y += gridSize.get()
+                
+                yrNoiseSet += noiseScale
+                ybNoiseSet += noiseScale
+                ygNoiseSet += noiseScale
+                
             x += gridSize.get()
+            
+            xrNoiseSet += noiseScale
+            xbNoiseSet += noiseScale
+            xgNoiseSet += noiseScale
                     
         
         canvas.pack()
