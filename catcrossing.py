@@ -48,37 +48,37 @@ class Application(tk.Frame):
         self.slider_panel.add(self.update_button)
         
         #xrSlide
-        self.xrSlide = Scale(self.slider_label, from_=1,to=15,orient=HORIZONTAL)
+        self.xrSlide = Scale(self.slider_label, from_=1,to=20,orient=HORIZONTAL)
         self.xrSlide.pack()
         self.xrLabel = Label(self.slider_label, text="xrNoise")
         self.xrLabel.pack()
         #yrSlide
-        self.yrSlide = Scale(self.slider_label, from_=1,to=15,orient=HORIZONTAL)
+        self.yrSlide = Scale(self.slider_label, from_=1,to=20,orient=HORIZONTAL)
         self.yrSlide.pack()
         self.yrLabel = Label(self.slider_label, text="yrNoise")
         self.yrLabel.pack()
         #xbSlide
-        self.xbSlide = Scale(self.slider_label, from_=1,to=15,orient=HORIZONTAL)
+        self.xbSlide = Scale(self.slider_label, from_=1,to=20,orient=HORIZONTAL)
         self.xbSlide.pack()
         self.xbLabel = Label(self.slider_label, text="xbNoise")
         self.xbLabel.pack()
         #ybSlide
-        self.ybSlide = Scale(self.slider_label, from_=1,to=15,orient=HORIZONTAL)
+        self.ybSlide = Scale(self.slider_label, from_=1,to=20,orient=HORIZONTAL)
         self.ybSlide.pack()
         self.ybLabel = Label(self.slider_label, text="ybNoise")
         self.ybLabel.pack()
         #xgSlide
-        self.xgSlide = Scale(self.slider_label, from_=1,to=15,orient=HORIZONTAL)
+        self.xgSlide = Scale(self.slider_label, from_=1,to=20,orient=HORIZONTAL)
         self.xgSlide.pack()
         self.xgLabel = Label(self.slider_label, text="xgNoise")
         self.xgLabel.pack()
         #ygSlide
-        self.ygSlide = Scale(self.slider_label, from_=1,to=15,orient=HORIZONTAL)
+        self.ygSlide = Scale(self.slider_label, from_=1,to=20,orient=HORIZONTAL)
         self.ygSlide.pack()
         self.ygLabel = Label(self.slider_label, text="ygNoise")
         self.ygLabel.pack()
         #gridSlide
-        self.gridSlide = Scale(self.slider_label, from_=5,to=30,orient=HORIZONTAL)
+        self.gridSlide = Scale(self.slider_label, from_=5,to=32,orient=HORIZONTAL)
         self.gridSlide.pack()
         self.gridLabel = Label(self.slider_label, text="gridSize")
         self.gridLabel.pack()
@@ -87,6 +87,10 @@ class Application(tk.Frame):
         self.strokeSlide.pack()
         self.strokeLabel = Label(self.slider_label, text="strokeDiv")
         self.strokeLabel.pack()
+        #blackground
+        self.blackground = IntVar()
+        self.check = Checkbutton(self.slider_label, text="for dark mode", variable=self.blackground)
+        self.check.pack()
         
         self.slider_panel.pack(side="top")
 
@@ -107,9 +111,15 @@ class Application(tk.Frame):
         y=root.winfo_rooty()+self.canvas.winfo_y()
         x1 = x+self.canvas.winfo_width()
         y1=y+self.canvas.winfo_height()
-        ImageGrab.grab().crop((x,y,x1,y1)).save("catcrossing.png")
+        ImageGrab.grab().crop((x+3,y+3,x1-3,y1-3)).save("catcrossing.png")
+    def darkmode(self):
+        if self.blackground.get() == 1:
+            self.canvas["bg"] = "black"
+        else:
+            self.canvas["bg"] = "white"
 
     def update(self):
+        self.darkmode()
         self.draw(self.canvas,self.xrSlide,self.yrSlide,self.xbSlide,self.ybSlide,self.xgSlide,self.ygSlide,self.gridSlide,self.strokeSlide)
         
     def noise(self, y, x):
@@ -148,9 +158,9 @@ class Application(tk.Frame):
                 
                 
                 if(random() > 0.5):
-                    canvas.create_line(x,y,x+gridSize.get(),y+gridSize.get(), fill=self.hexColor((red,blue,green)), width = gridSize.get()/strokeDiv.get(),smooth=True)
+                    canvas.create_line(x,y,x+gridSize.get(),y+gridSize.get(), fill=self.hexColor((red,blue,green)), width = gridSize.get()/strokeDiv.get(),smooth=True,splinesteps=24)
                 else:
-                    canvas.create_line(x,y+gridSize.get(),x+gridSize.get(),y, fill=self.hexColor((red,blue,green)), width = gridSize.get()/strokeDiv.get(),smooth=True)
+                    canvas.create_line(x,y+gridSize.get(),x+gridSize.get(),y, fill=self.hexColor((red,blue,green)), width = gridSize.get()/strokeDiv.get(),smooth=True,splinesteps=24)
                 y += gridSize.get()
                 
                 yrNoiseSet += noiseScale
